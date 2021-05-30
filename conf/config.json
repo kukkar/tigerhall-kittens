@@ -1,0 +1,36 @@
+{
+    "AppName" : "tigerhall-kittens",
+    "AppVersion" : "1.0",
+    "ServerHost" : "0.0.0.0",
+    "ServerPort" : "8085",
+    "Environment" : "prod",
+    "SuperKey" : "dRgUkXp2s5u8x/A?D(G+KbPeShVmYq3t",
+    "LogConfig" : {
+        "Level": 0,
+        "Encoding": "json",
+        "OutputPaths": "stdout",
+        "ErrorOutputPaths": "stderr",
+        "InitialField": ""
+    },
+    "ApplicationConfig" : {
+        "UseClientValidator" : true,
+        "Mysql" : {
+            "User" : "root",
+            "Password" : "Golang@1994",
+            "DbName" : "merchant",
+            "MaxOpenConnections" : 10,
+            "MaxIdleConnections" : 3,
+            "Host" : "127.0.0.1",
+            "Port" : "3306",
+            "DefaultTimeZone" : "Europe/Paris"
+        },
+        "Cache" : {
+            "Use" : "redis",
+            "Redis" : {
+                "Addr" : "127.0.0.1:6379",
+                "PoolSize" : 100
+            }
+        },
+        "SentryDSN" : "https://829d394c3ec84a7fbba55e1910a87816@sentry.bharatpe.in/39"
+    }
+}
