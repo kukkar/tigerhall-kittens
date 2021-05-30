@@ -20,9 +20,6 @@ github.com/getsentry/sentry-go/gin
 github.com/getsentry/sentry-go/internal/crypto/randutil
 github.com/getsentry/sentry-go/internal/debug
 github.com/getsentry/sentry-go/internal/ratelimit
-# github.com/gin-contrib/pprof v1.3.0
-## explicit
-github.com/gin-contrib/pprof
 # github.com/gin-contrib/sse v0.1.0
 github.com/gin-contrib/sse
 # github.com/gin-gonic/gin v1.7.2
@@ -99,6 +96,7 @@ github.com/kukkar/common-golang/pkg/utils/concurrenthashmap
 github.com/kukkar/common-golang/pkg/utils/env
 github.com/kukkar/common-golang/pkg/utils/hashmac
 github.com/kukkar/common-golang/pkg/utils/hmacrequestgenerator
+github.com/kukkar/common-golang/pkg/utils/queryparser
 github.com/kukkar/common-golang/pkg/utils/rError
 # github.com/leodido/go-urn v1.2.0
 github.com/leodido/go-urn
@@ -225,6 +223,9 @@ google.golang.org/protobuf/reflect/protoreflect
 google.golang.org/protobuf/reflect/protoregistry
 google.golang.org/protobuf/runtime/protoiface
 google.golang.org/protobuf/runtime/protoimpl
+# gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
+gopkg.in/mgo.v2/bson
+gopkg.in/mgo.v2/internal/json
 # gopkg.in/yaml.v2 v2.3.0
 gopkg.in/yaml.v2
 # howett.net/plist v0.0.0-20181124034731-591f970eefbb
