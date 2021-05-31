@@ -9,7 +9,8 @@ import (
 )
 
 type tigherhall struct {
-	stAdapter storageAdapter
+	stAdapter      storageAdapter
+	imageStAdapter ImageStorageAdapter
 }
 
 //
@@ -53,6 +54,21 @@ func (this *tigherhall) ListSigntsOfTiger(q queryparser.QueryParamsList,
 	limit, offset int) (*ResListSigntsOfTiger, error) {
 
 	return nil, fmt.Errorf("todo")
+}
+
+func (this *tigherhall) CreateImage(im *Image) error {
+	if im.Variations == nil {
+		im.Variations = []Variation{{
+			Size: Size{
+				Width:  DEFAULT_VARIATION_WIDTH,
+				Height: DEFAULT_VARIATION_HEIGHT,
+			},
+			Data:  im.Data,
+			Image: im,
+		},
+		}
+	}
+	return this.imageStAdapter.CreateImage(im)
 }
 
 //

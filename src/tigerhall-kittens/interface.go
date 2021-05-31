@@ -11,4 +11,5 @@ type Tigerhall interface {
 	SightATiger(req ReqSightOfATiger) (*int, error)
 	ListSigntsOfTiger(q queryparser.QueryParamsList,
 		limit, offset int) (*ResListSigntsOfTiger, error)
+	CreateImage(im *Image) error
 }

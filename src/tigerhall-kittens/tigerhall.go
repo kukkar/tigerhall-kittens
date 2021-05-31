@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	appConf "github.com/kukkar/tigerhall-kittens/conf"
 	mfactory "github.com/kukkar/tigerhall-kittens/src/common/factory/mongof"
 )
 
@@ -14,8 +15,13 @@ func GetTigerHallKittens(c context.Context,
 	if err != nil {
 		return nil, err
 	}
+	imStAdapter, err := GetImageAdapter()
+	if err != nil {
+		return nil, err
+	}
 	return &tigherhall{
-		stAdapter: stAdapter,
+		stAdapter:      stAdapter,
+		imageStAdapter: imStAdapter,
 	}, nil
 }
 
@@ -40,4 +46,20 @@ func getMongoAdapater(key string) (*mfactory.MDB, error) {
 		key = mfactory.DEFAULT_KEY
 	}
 	return mfactory.GetPool(key)
+}
+
+func GetImageAdapter() (ImageStorageAdapter, error) {
+
+	config, _ := appConf.GetAppConfig()
+
+	adapter2use := config.ImageStorage.Use
+	switch adapter2use {
+	case ADAPTER_TYPE_LOCAL:
+		return InitializeLocalStorage(
+			LocalStorageConf{
+				Path: config.ImageStorage.Local.Path,
+			})
+	default:
+		return nil, fmt.Errorf("Wrong Adapter supplied for Image storage")
+	}
 }

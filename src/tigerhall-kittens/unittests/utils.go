@@ -16,8 +16,8 @@ func InitTestConfig() {
 	}
 	cm := new(config.ConfigManager)
 	cm.InitializeGlobalConfig(path + "/" + confFile)
-	cm.UpdateConfigFromEnv(config.GlobalAppConfig, "global")
-	cm.UpdateConfigFromEnv(config.GlobalAppConfig.ApplicationConfig, "")
+	//	cm.UpdateConfigFromEnv(config.GlobalAppConfig, "global")
+	//	cm.UpdateConfigFromEnv(config.GlobalAppConfig.ApplicationConfig, "")
 }
 
 func RegisterTestConfig() {

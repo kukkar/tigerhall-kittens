@@ -9,9 +9,11 @@ const (
 	TigetHallCollection = "tigertracker"
 
 	//Defaults to use
-	DEFAULT_EXTENSION  = "jpeg"
-	DEFAULT_RESOURCE   = "default"
-	NOT_FOUND_RESOURCE = "404notfound"
+	DEFAULT_EXTENSION        = "jpeg"
+	DEFAULT_RESOURCE         = "default"
+	NOT_FOUND_RESOURCE       = "404notfound"
+	DEFAULT_VARIATION_WIDTH  = 250
+	DEFAULT_VARIATION_HEIGHT = 200
 
 	//Define possible Image storage adapters
 	ADAPTER_TYPE_LOCAL = "Local"
