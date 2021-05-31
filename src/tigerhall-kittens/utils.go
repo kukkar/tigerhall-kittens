@@ -1,6 +1,10 @@
 package tigerhall
 
-import "math"
+import (
+	"math"
+
+	randomdata "github.com/Pallinder/go-randomdata"
+)
 
 func distance(lat1 float64, lng1 float64,
 	lat2 float64, lng2 float64, unit ...string) float64 {
@@ -32,4 +36,11 @@ func distance(lat1 float64, lng1 float64,
 	}
 
 	return dist
+}
+
+//
+// Generate a random name for the image.
+//
+func GenerateRandomName() string {
+	return randomdata.SillyName() + randomdata.StringNumber(1, "")
 }

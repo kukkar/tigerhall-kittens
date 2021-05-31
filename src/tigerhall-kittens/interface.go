@@ -5,7 +5,7 @@ import (
 )
 
 type Tigerhall interface {
-	CreateTiger(req ReqCreateTiger) (*int, error)
+	CreateTiger(req ReqCreateTiger) error
 	ListTigers(q queryparser.QueryParamsList,
 		limit, offset int) ([]ResListTiger, error)
 	SightATiger(req ReqSightOfATiger) (*int, error)

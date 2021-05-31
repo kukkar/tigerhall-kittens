@@ -1,5 +1,26 @@
+# github.com/Pallinder/go-randomdata v1.2.0
+## explicit
+github.com/Pallinder/go-randomdata
 # github.com/armon/go-radix v1.0.0
 github.com/armon/go-radix
+# github.com/aws/aws-sdk-go v1.34.28
+github.com/aws/aws-sdk-go/aws
+github.com/aws/aws-sdk-go/aws/awserr
+github.com/aws/aws-sdk-go/aws/awsutil
+github.com/aws/aws-sdk-go/aws/client/metadata
+github.com/aws/aws-sdk-go/aws/credentials
+github.com/aws/aws-sdk-go/aws/endpoints
+github.com/aws/aws-sdk-go/aws/request
+github.com/aws/aws-sdk-go/aws/signer/v4
+github.com/aws/aws-sdk-go/internal/context
+github.com/aws/aws-sdk-go/internal/ini
+github.com/aws/aws-sdk-go/internal/sdkio
+github.com/aws/aws-sdk-go/internal/sdkmath
+github.com/aws/aws-sdk-go/internal/shareddefaults
+github.com/aws/aws-sdk-go/internal/strings
+github.com/aws/aws-sdk-go/internal/sync/singleflight
+github.com/aws/aws-sdk-go/private/protocol
+github.com/aws/aws-sdk-go/private/protocol/rest
 # github.com/elastic/go-licenser v0.3.1
 github.com/elastic/go-licenser
 github.com/elastic/go-licenser/licensing
@@ -16,7 +37,6 @@ github.com/elastic/go-windows
 # github.com/getsentry/sentry-go v0.11.0
 ## explicit
 github.com/getsentry/sentry-go
-github.com/getsentry/sentry-go/gin
 github.com/getsentry/sentry-go/internal/crypto/randutil
 github.com/getsentry/sentry-go/internal/debug
 github.com/getsentry/sentry-go/internal/ratelimit
@@ -57,8 +77,12 @@ github.com/go-redis/redis/internal/util
 # github.com/go-sql-driver/mysql v1.6.0
 ## explicit
 github.com/go-sql-driver/mysql
+# github.com/go-stack/stack v1.8.0
+github.com/go-stack/stack
 # github.com/golang/protobuf v1.4.2
 github.com/golang/protobuf/proto
+# github.com/golang/snappy v0.0.1
+github.com/golang/snappy
 # github.com/google/uuid v1.1.1
 github.com/google/uuid
 # github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
@@ -68,6 +92,8 @@ github.com/jinzhu/gorm
 github.com/jinzhu/gorm/dialects/mysql
 # github.com/jinzhu/inflection v1.0.0
 github.com/jinzhu/inflection
+# github.com/jmespath/go-jmespath v0.4.0
+github.com/jmespath/go-jmespath
 # github.com/joeshaw/multierror v0.0.0-20140124173710-69b34d4ec901
 github.com/joeshaw/multierror
 # github.com/joho/godotenv v1.3.0
@@ -75,9 +101,16 @@ github.com/joeshaw/multierror
 github.com/joho/godotenv
 # github.com/json-iterator/go v1.1.9
 github.com/json-iterator/go
+# github.com/klauspost/compress v1.9.8
+github.com/klauspost/compress/fse
+github.com/klauspost/compress/huff0
+github.com/klauspost/compress/snappy
+github.com/klauspost/compress/zstd
+github.com/klauspost/compress/zstd/internal/xxhash
 # github.com/kukkar/common-golang v1.1.2
 ## explicit
 github.com/kukkar/common-golang/globalconst
+github.com/kukkar/common-golang/pkg/components/mongodb
 github.com/kukkar/common-golang/pkg/config
 github.com/kukkar/common-golang/pkg/factory/cache
 github.com/kukkar/common-golang/pkg/factory/sql
@@ -111,6 +144,10 @@ github.com/pkg/errors
 # github.com/prometheus/procfs v0.0.3
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
+# github.com/sanksons/gowraps v0.0.0-20190222131244-8574ba0bf631
+## explicit
+github.com/sanksons/gowraps/filesystem
+github.com/sanksons/gowraps/imaging
 # github.com/santhosh-tekuri/jsonschema v1.2.4
 github.com/santhosh-tekuri/jsonschema
 github.com/santhosh-tekuri/jsonschema/decoders
@@ -119,6 +156,12 @@ github.com/santhosh-tekuri/jsonschema/loader
 github.com/santhosh-tekuri/jsonschema/mediatypes
 # github.com/ugorji/go/codec v1.1.13
 github.com/ugorji/go/codec
+# github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c
+github.com/xdg/scram
+# github.com/xdg/stringprep v1.0.0
+github.com/xdg/stringprep
+# github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d
+github.com/youmark/pkcs8
 # go.elastic.co/apm v1.12.0
 go.elastic.co/apm
 go.elastic.co/apm/apmconfig
@@ -148,11 +191,47 @@ go.elastic.co/apm/module/apmgorm
 go.elastic.co/apm/module/apmgorm/dialects/mysql
 # go.elastic.co/apm/module/apmhttp v1.12.0
 go.elastic.co/apm/module/apmhttp
+# go.elastic.co/apm/module/apmmongo v1.11.0
+go.elastic.co/apm/module/apmmongo
 # go.elastic.co/apm/module/apmsql v1.8.0
 go.elastic.co/apm/module/apmsql
 go.elastic.co/apm/module/apmsql/mysql
 # go.elastic.co/fastjson v1.1.0
 go.elastic.co/fastjson
+# go.mongodb.org/mongo-driver v1.5.0
+## explicit
+go.mongodb.org/mongo-driver/bson
+go.mongodb.org/mongo-driver/bson/bsoncodec
+go.mongodb.org/mongo-driver/bson/bsonoptions
+go.mongodb.org/mongo-driver/bson/bsonrw
+go.mongodb.org/mongo-driver/bson/bsontype
+go.mongodb.org/mongo-driver/bson/primitive
+go.mongodb.org/mongo-driver/event
+go.mongodb.org/mongo-driver/internal
+go.mongodb.org/mongo-driver/mongo
+go.mongodb.org/mongo-driver/mongo/address
+go.mongodb.org/mongo-driver/mongo/description
+go.mongodb.org/mongo-driver/mongo/options
+go.mongodb.org/mongo-driver/mongo/readconcern
+go.mongodb.org/mongo-driver/mongo/readpref
+go.mongodb.org/mongo-driver/mongo/writeconcern
+go.mongodb.org/mongo-driver/tag
+go.mongodb.org/mongo-driver/version
+go.mongodb.org/mongo-driver/x/bsonx
+go.mongodb.org/mongo-driver/x/bsonx/bsoncore
+go.mongodb.org/mongo-driver/x/mongo/driver
+go.mongodb.org/mongo-driver/x/mongo/driver/auth
+go.mongodb.org/mongo-driver/x/mongo/driver/auth/internal/gssapi
+go.mongodb.org/mongo-driver/x/mongo/driver/connstring
+go.mongodb.org/mongo-driver/x/mongo/driver/dns
+go.mongodb.org/mongo-driver/x/mongo/driver/mongocrypt
+go.mongodb.org/mongo-driver/x/mongo/driver/mongocrypt/options
+go.mongodb.org/mongo-driver/x/mongo/driver/ocsp
+go.mongodb.org/mongo-driver/x/mongo/driver/operation
+go.mongodb.org/mongo-driver/x/mongo/driver/session
+go.mongodb.org/mongo-driver/x/mongo/driver/topology
+go.mongodb.org/mongo-driver/x/mongo/driver/uuid
+go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage
 # go.uber.org/atomic v1.6.0
 go.uber.org/atomic
 # go.uber.org/multierr v1.5.0
@@ -165,6 +244,7 @@ go.uber.org/zap/internal/color
 go.uber.org/zap/internal/exit
 go.uber.org/zap/zapcore
 # golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+golang.org/x/crypto/ocsp
 golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/sha3
 # golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5
@@ -173,12 +253,18 @@ golang.org/x/lint/golint
 # golang.org/x/mod v0.2.0
 golang.org/x/mod/module
 golang.org/x/mod/semver
+# golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
+golang.org/x/sync/errgroup
+golang.org/x/sync/semaphore
 # golang.org/x/sys v0.0.0-20200519105757-fe76b779f299
 golang.org/x/sys/cpu
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 golang.org/x/sys/windows/registry
+# golang.org/x/text v0.3.3
+golang.org/x/text/transform
+golang.org/x/text/unicode/norm
 # golang.org/x/tools v0.0.0-20200509030707-2212a7e161a5
 golang.org/x/tools/cmd/goimports
 golang.org/x/tools/go/ast/astutil

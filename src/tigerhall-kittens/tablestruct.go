@@ -3,7 +3,6 @@ package tigerhall
 import "time"
 
 type MongoTigerCollection struct {
-	UUID                string            `bson:"id"`
 	Name                string            `bson:"name"`
 	DOB                 time.Time         `bson:"dob"`
 	LastSeenAt          time.Time         `bson:"lastSeenAt"`

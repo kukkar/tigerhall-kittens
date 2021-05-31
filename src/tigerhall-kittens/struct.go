@@ -1,6 +1,9 @@
 package tigerhall
 
-import "time"
+import (
+	"image"
+	"time"
+)
 
 type ReqCreateTiger struct {
 	Name        string
@@ -41,10 +44,10 @@ type SightData struct {
 }
 
 type ConfigTigerHall struct {
+	StorageAdapter string
 }
 
 type TigerCollection struct {
-	UUID                string
 	Name                string
 	DOB                 time.Time
 	LastSeenAt          time.Time
@@ -61,4 +64,19 @@ type TigerSight struct {
 type igerCoordinates struct {
 	Lat  float64
 	Long float64
+}
+
+//
+// Image struct
+// This acts as the backbone of Image processing.
+//
+type Image struct {
+	Name           string
+	Extension      string
+	Resource       string
+	Type           string
+	Status         string
+	Variations     []Variation
+	Data           image.Image
+	storageAdapter ImageStorageAdapter
 }

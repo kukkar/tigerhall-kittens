@@ -3,8 +3,6 @@ package main
 import (
 	"os"
 
-	"github.com/getsentry/sentry-go"
-	sentrygin "github.com/getsentry/sentry-go/gin"
 	_ "github.com/go-sql-driver/mysql"
 	config "github.com/kukkar/common-golang/pkg/config"
 	appConf "github.com/kukkar/tigerhall-kittens/conf"
@@ -46,7 +44,6 @@ func main() {
 	//recovery in case of panic registering
 	router.Use(gin.Recovery())
 
-	registerSentry(router)
 	//register default routes
 	registerDefaultRoutes(router)
 	// registerning middlewares
@@ -157,31 +154,4 @@ func registerDefaultRoutes(router *gin.Engine) {
 	// 	url := ginSwagger.URL("http://localhost:8086/swagger/doc.json") // The url pointing to API definition
 	// 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 	// }
-}
-
-func registerSentry(router *gin.Engine) {
-	conf, err := appConf.GetAppConfig()
-	if err != nil {
-		panic(err)
-	}
-	if conf.SentryDSN == "" {
-		return
-	}
-	gConf, err := appConf.GetGlobalConfig()
-	if err != nil {
-		panic(err)
-	}
-	if gConf.Environment != "dev" {
-		err = sentry.Init(sentry.ClientOptions{
-			// Either set your DSN here or set the SENTRY_DSN environment variable.
-			Dsn: conf.SentryDSN,
-			// Enable printing of SDK debug messages.
-			// Useful when getting started or trying to figure something out.
-			Debug: true,
-		})
-	}
-	if err != nil {
-		panic(err)
-	}
-	router.Use(sentrygin.New(sentrygin.Options{}))
 }

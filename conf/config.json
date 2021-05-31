@@ -24,12 +24,27 @@
             "Port" : "3306",
             "DefaultTimeZone" : "Europe/Paris"
         },
+        "ImageStorage": {
+            "Use": "Local",
+            "Local": {
+                "Path": "/var/data/imageprocessing"
+            },
+            "S3": {
+                "BucketName": "test",
+                "Region": "",
+                "LogLevel": 0
+            }
+        },
         "Cache" : {
             "Use" : "redis",
             "Redis" : {
                 "Addr" : "127.0.0.1:6379",
                 "PoolSize" : 100
             }
+        },
+        "Mongo" : {
+            "URL": "mongodb://localhost:27017",
+            "DbName" : "tiberhall"
         },
         "SentryDSN" : "https://829d394c3ec84a7fbba55e1910a87816@sentry.bharatpe.in/39"
     }
