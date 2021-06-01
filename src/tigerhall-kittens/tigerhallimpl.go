@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kukkar/common-golang/pkg/logger"
 	"github.com/kukkar/common-golang/pkg/utils/queryparser"
 	"github.com/sanksons/gowraps/imaging"
 )
@@ -35,16 +36,36 @@ func (this *tigherhall) CreateTiger(req ReqCreateTiger) error {
 // ListTigers List all tigers registered previously on query basis
 //
 func (this *tigherhall) ListTigers(q queryparser.QueryParamsList,
-	limit, offset int) ([]ResListTiger, error) {
-
-	return nil, fmt.Errorf("todo")
+	limit, offset int) ([]ResListTiger, int, error) {
+	ctx := context.TODO()
+	res := make([]ResListTiger, 0)
+	dbData, count, err := this.stAdapter.getTigers(ctx, q, limit, offset, "", "asc")
+	if err != nil {
+		return nil, 0, err
+	}
+	for _, eachDbData := range dbData {
+		res = append(res, ResListTiger{
+			Name:                eachDbData.Name,
+			DOB:                 eachDbData.DOB,
+			SeenAt:              eachDbData.LastSeenAt,
+			LastSeenCoordinates: eachDbData.LastSeenCoordinates,
+		})
+	}
+	logger.Info(fmt.Sprintf("dbData %v count %d", dbData, count))
+	return res, count, nil
 }
 
 //
 // SightATiger Register a particular sight of a tiger
 //
-func (this *tigherhall) SightATiger(req ReqSightOfATiger) (*int, error) {
-	return nil, fmt.Errorf("todo")
+func (this *tigherhall) SightATiger(tigerID string, req ReqSightOfATiger) error {
+
+	return this.stAdapter.addTigerSight(context.Background(), tigerID, SightData{
+		ImagePath:   req.ImagePath,
+		TimeStamp:   req.TimeStamp,
+		Coordinates: req.Coordinates,
+	})
+	return nil
 }
 
 //
@@ -66,6 +87,12 @@ func (this *tigherhall) CreateImage(im *Image) error {
 			Data:  im.Data,
 			Image: im,
 		},
+		}
+	}
+	for _, eachVariation := range im.Variations {
+		err := eachVariation.Tailor()
+		if err != nil {
+			return err
 		}
 	}
 	return this.imageStAdapter.CreateImage(im)

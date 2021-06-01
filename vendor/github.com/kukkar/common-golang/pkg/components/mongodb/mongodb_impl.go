@@ -155,18 +155,33 @@ func (obj *MongoDriver) findOne(ctx context.Context, collection *mgo.Collection,
 // 	return obj.findAll(sess.DB(obj.conf.DbName).C(collection), bson.M(query))
 // }
 
-// // FindAll queries the mongo DB and returns all the results
-// func (obj *MongoDriver) FindAll(collection string, query map[string]interface{}) (ret []interface{}, aerr *MDBError) {
-// 	//	obj.session.Refresh()
-// 	return obj.findAll(obj.conn.Collection(collection), bson.M(query))
-// }
+// FindAll queries the mongo DB and returns all the results
+func (obj *MongoDriver) FindAll(ctx context.Context, collection string, query map[string]interface{}) (ret []interface{}, aerr *MDBError) {
+	//	obj.session.Refresh()
+	return obj.findAll(ctx, obj.conn.Collection(collection), bson.M(query))
+}
 
-// func (obj *MongoDriver) findAll(collection *mgo.Collection, query bson.M) (ret []interface{}, aerr *MDBError) {
-// 	if err := collection.Find(query).All(&ret); err != nil {
-// 		return nil, getErrObj(ErrFindAllFailure, err.Error())
-// 	}
-// 	return ret, nil
-// }
+func (obj *MongoDriver) findAll(ctx context.Context, collection *mgo.Collection, query bson.M) (ret []interface{}, aerr *MDBError) {
+
+	res := make([]interface{}, 0)
+
+	cursor, err := collection.Find(ctx, query)
+	if err != nil {
+		return nil, getErrObj(ErrFindAllFailure, cursor.Err().Error())
+	}
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		// Declare a result BSON object
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			return nil, getErrObj(ErrFindAllFailure, cursor.Err().Error())
+		}
+		res = append(res, result)
+	}
+	return res, nil
+}
 
 // // FindAll queries the mongo DB and returns the results with limit
 // func (obj *MongoDriver) FindWithLimit(collection string, query map[string]interface{}, skip int, limit int) (ret []interface{}, aerr *MDBError) {
@@ -229,18 +244,19 @@ func (obj *MongoDriver) insertMany(ctx context.Context, collection *mgo.Collecti
 // 	return obj.update(sess.DB(obj.conf.DbName).C(collection), bson.M(query), value)
 // }
 
-// // Update updates the mongo DB collection passed as an argument
-// func (obj *MongoDriver) Update(collection string, query map[string]interface{}, value interface{}) *MDBError {
-// 	//	obj.session.Refresh()
-// 	return obj.update(obj.conn.Collection(collection), bson.M(query), value)
-// }
+// Update updates the mongo DB collection passed as an argument
+func (obj *MongoDriver) Update(ctx context.Context, collection string, query map[string]interface{}, value interface{}) *MDBError {
+	//	obj.session.Refresh()
+	return obj.update(ctx, obj.conn.Collection(collection), bson.M(query), value)
+}
 
-// func (obj *MongoDriver) update(collection *mgo.Collection, query bson.M, value interface{}) *MDBError {
-// 	if err := collection.Update(query, value); err != nil {
-// 		return getErrObj(ErrUpdateFailure, err.Error())
-// 	}
-// 	return nil
-// }
+func (obj *MongoDriver) update(ctx context.Context, collection *mgo.Collection, query bson.M, value interface{}) *MDBError {
+	_, err := collection.UpdateOne(ctx, query, value)
+	if err != nil {
+		return getErrObj(ErrUpdateFailure, err.Error())
+	}
+	return nil
+}
 
 // // Update updates the mongo DB collection passed as an argument
 // func (obj *MongoDriver) UpdateAll(collection string, query map[string]interface{}, value interface{}) (*mgo.ChangeInfo, *MDBError) {
@@ -582,14 +598,44 @@ func (obj *MongoDriver) insertMany(ctx context.Context, collection *mgo.Collecti
 
 // }
 
-// func (obj *MongoDriver) FindSortnLoad(coll string, query map[string]interface{}, selectField map[string]interface{}, sortField string, skip int, limit int, payload interface{}) (cnt int, aerr *MDBError) {
-// 	//	obj.session.Refresh()
-// 	if err := obj.conn.Collection(coll).Find(query).Select(selectField).Sort(sortField).Skip(skip).Limit(limit).All(payload); err != nil {
-// 		return 0, getErrObj(ErrFindAllFailure, err.Error())
-// 	}
-// 	count, errC := obj.conn.Collection(coll).Find(query).Count()
-// 	if errC != nil {
-// 		return 0, getErrObj(ErrFindAllFailure, errC.Error())
-// 	}
-// 	return count, nil
-// }
+func (obj *MongoDriver) FindSortnLoad(ctx context.Context, coll string, query map[string]interface{},
+	selectField map[string]interface{},
+	sortField string, sortOrder int, skip int,
+	limit int) (res []interface{}, cnt int, aerr *MDBError) {
+
+	res = make([]interface{}, 0)
+	findOptions := options.Find()
+	// // Sort by `price` field descending
+	// if sortField != "" {
+	// 	findOptions.SetSort(bson.D{{sortField, sortOrder}})
+	// }
+
+	findOptions.SetSkip(int64(skip))
+	findOptions.SetLimit(int64(limit))
+
+	cursor, err := obj.conn.Collection(coll).Find(ctx, query, findOptions)
+	if err != nil {
+		return nil, 0, getErrObj(ErrFindAllFailure, err.Error())
+	}
+
+	if err != nil {
+		return nil, 0, getErrObj(ErrFindAllFailure, cursor.Err().Error())
+	}
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		// Declare a result BSON object
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			return nil, 0, getErrObj(ErrFindAllFailure, cursor.Err().Error())
+		}
+		res = append(res, result)
+	}
+
+	count, errC := obj.conn.Collection(coll).CountDocuments(ctx, query)
+	if errC != nil {
+		return nil, 0, getErrObj(ErrFindAllFailure, errC.Error())
+	}
+	return res, int(count), nil
+}

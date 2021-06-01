@@ -18,6 +18,12 @@ func TestCreateImage(t *testing.T) {
 	if err != nil {
 		t.Errorf("Test failed, expected: '%s', got:  '%s'", "created image successfully", err.Error())
 	}
+	for _, each := range imData.Variations {
+		err := each.Tailor()
+		if err != nil {
+			t.Errorf("Test failed, expected: '%s', got:  '%s'", "created image successfully", err.Error())
+		}
+	}
 }
 
 func mockDataUploadImage() *Image {
@@ -30,11 +36,22 @@ func mockDataUploadImage() *Image {
 		panic(err)
 	}
 	imData := Image{
-		Name:      "testImage.jpeg",
+		Name:      "testImage9",
 		Extension: "jpeg",
 		Resource:  "tiger",
-		Type:      "tigerhall",
+		Type:      "tigerhalltest",
 		Data:      *coreImage,
 	}
+	Variations := []Variation{{
+		Size: Size{
+			Width:  DEFAULT_VARIATION_WIDTH,
+			Height: DEFAULT_VARIATION_HEIGHT,
+		},
+		Extension: "jpeg",
+		Data:      *coreImage,
+		Image:     &imData,
+	},
+	}
+	imData.Variations = Variations
 	return &imData
 }

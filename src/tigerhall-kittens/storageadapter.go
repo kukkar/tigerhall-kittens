@@ -10,5 +10,6 @@ type storageAdapter interface {
 	createNewTiger(ctx context.Context,
 		req TigerCollection) error
 	getTigers(ctx context.Context, q queryparser.QueryParamsList,
-		limit, offset int) ([]TigerCollection, error)
+		limit, page int, sortBy string, sortOrder string) ([]TigerCollection, int, error)
+	addTigerSight(ctx context.Context, id string, req SightData) error
 }

@@ -18,7 +18,8 @@ type MDBInterface interface {
 	// //FindOneUsingSession(*MSession, string, map[string]interface{}) (interface{}, *MDBError)
 
 	// // FindAll returns all matching items
-	// FindAll(string, map[string]interface{}) ([]interface{}, *MDBError)
+	FindAll(ctx context.Context, collection string,
+		query map[string]interface{}) (ret []interface{}, aerr *MDBError)
 
 	// //FindAllUsingSession(*MSession, string, map[string]interface{}) ([]interface{}, *MDBError)
 
@@ -42,7 +43,8 @@ type MDBInterface interface {
 	// //	InsertUsingSession(*MSession, string, interface{}) *MDBError
 
 	// // Update modify existing item
-	// Update(string, map[string]interface{}, interface{}) *MDBError
+	Update(ctx context.Context, collection string,
+		query map[string]interface{}, value interface{}) *MDBError
 
 	// UpdateAll(string, map[string]interface{}, interface{}) (*mgo.ChangeInfo, *MDBError)
 
@@ -99,5 +101,8 @@ type MDBInterface interface {
 
 	// FindAndModify(string, map[string]interface{}, interface{}, bool, bool) (interface{}, *MDBError)
 
-	// FindSortnLoad(coll string, q map[string]interface{}, selField map[string]interface{}, order string, page int, limit int, payload interface{}) (int, *MDBError)
+	FindSortnLoad(ctx context.Context, coll string, query map[string]interface{},
+		selectField map[string]interface{},
+		sortField string, sortOrder int, skip int,
+		limit int) (res []interface{}, cnt int, aerr *MDBError)
 }

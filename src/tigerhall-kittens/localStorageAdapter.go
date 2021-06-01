@@ -125,3 +125,38 @@ func (this *LocalStorage) save(imageFilePath string, data []byte, override bool)
 func (this *LocalStorage) checkIfFileExists(filepath string) (bool, error) {
 	return filesystem.CheckIfFileExists(filepath)
 }
+
+//
+// Implementation of CreateVariation() function
+//
+func (this *LocalStorage) CreateVariation(v *Variation) error {
+
+	im := v.Image
+	imagePath := this.getStoragePath(v.Image.Resource, v.Image.Type, v.Size.ToText())
+	// Create directory if required.
+	if err := this.createDirectory(imagePath); err != nil {
+		return err
+	}
+	fullImagePath := strings.Join([]string{imagePath, im.GetName(true)}, DS)
+	saveerr := this.save(fullImagePath, v.GetDataBytes(), true)
+	if saveerr != nil {
+		return saveerr
+	}
+	return nil
+}
+
+//
+// Implementation of GetVariation() function
+//
+func (this *LocalStorage) GetVariation(v *Variation) ([]byte, error) {
+	imagePath := this.getStoragePath(v.Image.Resource, v.Image.Type, v.Size.ToText())
+	fullImagePath := strings.Join([]string{imagePath, v.Image.GetName(true)}, DS)
+	dataBytes, err := this.getFile(fullImagePath)
+	if err != nil {
+		return nil, err
+	}
+	if err == nil && dataBytes == nil {
+		return nil, ErrFileNotFound
+	}
+	return dataBytes, nil
+}

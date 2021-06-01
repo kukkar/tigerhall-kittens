@@ -107,7 +107,7 @@ github.com/klauspost/compress/huff0
 github.com/klauspost/compress/snappy
 github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
-# github.com/kukkar/common-golang v1.1.2
+# github.com/kukkar/common-golang v1.1.3-0.20210601084146-7b7176046770
 ## explicit
 github.com/kukkar/common-golang/globalconst
 github.com/kukkar/common-golang/pkg/components/mongodb
@@ -139,6 +139,9 @@ github.com/mattn/go-isatty
 github.com/modern-go/concurrent
 # github.com/modern-go/reflect2 v1.0.1
 github.com/modern-go/reflect2
+# github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+## explicit
+github.com/nfnt/resize
 # github.com/pkg/errors v0.9.1
 github.com/pkg/errors
 # github.com/prometheus/procfs v0.0.3
@@ -163,6 +166,7 @@ github.com/xdg/stringprep
 # github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d
 github.com/youmark/pkcs8
 # go.elastic.co/apm v1.12.0
+## explicit
 go.elastic.co/apm
 go.elastic.co/apm/apmconfig
 go.elastic.co/apm/internal/apmcloudutil
@@ -183,14 +187,9 @@ go.elastic.co/apm/internal/wildcard
 go.elastic.co/apm/model
 go.elastic.co/apm/stacktrace
 go.elastic.co/apm/transport
-# go.elastic.co/apm/module/apmgin v1.12.0
-## explicit
-go.elastic.co/apm/module/apmgin
 # go.elastic.co/apm/module/apmgorm v1.8.0
 go.elastic.co/apm/module/apmgorm
 go.elastic.co/apm/module/apmgorm/dialects/mysql
-# go.elastic.co/apm/module/apmhttp v1.12.0
-go.elastic.co/apm/module/apmhttp
 # go.elastic.co/apm/module/apmmongo v1.11.0
 go.elastic.co/apm/module/apmmongo
 # go.elastic.co/apm/module/apmsql v1.8.0

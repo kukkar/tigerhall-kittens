@@ -1,6 +1,7 @@
 package unittests
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -15,9 +16,10 @@ func InitTestConfig() {
 		log.Println(err)
 	}
 	cm := new(config.ConfigManager)
+	fmt.Printf("### %v", path+"/"+confFile)
 	cm.InitializeGlobalConfig(path + "/" + confFile)
-	//	cm.UpdateConfigFromEnv(config.GlobalAppConfig, "global")
-	//	cm.UpdateConfigFromEnv(config.GlobalAppConfig.ApplicationConfig, "")
+	cm.UpdateConfigFromEnv(config.GlobalAppConfig, "global")
+	cm.UpdateConfigFromEnv(config.GlobalAppConfig.ApplicationConfig, "")
 }
 
 func RegisterTestConfig() {

@@ -11,7 +11,7 @@ import (
 func GetTigerHallKittens(c context.Context,
 	config ConfigTigerHall) (Tigerhall, error) {
 
-	stAdapter, err := getStorageAdapter("", config.StorageAdapter)
+	stAdapter, err := getStorageAdapter(mfactory.DEFAULT_KEY, config.StorageAdapter)
 	if err != nil {
 		return nil, err
 	}

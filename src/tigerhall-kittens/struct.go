@@ -18,11 +18,11 @@ type Coordinates struct {
 }
 
 type ResListTiger struct {
-	ID          string
-	Name        string
-	DOB         time.Time
-	SeenAt      time.Time
-	Coordinates Coordinates
+	ID                  string
+	Name                string
+	DOB                 time.Time
+	SeenAt              time.Time
+	LastSeenCoordinates Coordinates
 }
 
 type ReqSightOfATiger struct {

@@ -7,7 +7,7 @@ type MongoTigerCollection struct {
 	DOB                 time.Time         `bson:"dob"`
 	LastSeenAt          time.Time         `bson:"lastSeenAt"`
 	LastSeenCoordinates Coordinates       `bson:"lastSeenCoordinates"`
-	TigerLastSeenSights []MongoTigerSight `bson:"tigerLastLocations"`
+	TigerLastSeenSights []MongoTigerSight `bson:"tigerLastLocations,omitempty"`
 }
 
 type MongoTigerSight struct {
