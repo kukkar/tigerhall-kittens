@@ -19,5 +19,9 @@ func Routes(route *gin.Engine) {
 	{
 		defaultMiddleware := middleware.DefaultMiddleware{}
 		v1.GET("/listtigers", defaultMiddleware.MonitorRequest(), controller.ListTigers)
+		v1.GET("/listtigersights", defaultMiddleware.MonitorRequest(), controller.ListTigerSight)
+		v1.POST("/uploadimage", defaultMiddleware.MonitorRequest(), controller.UploadImage)
+		v1.POST("/createtiger", defaultMiddleware.MonitorRequest(), controller.CreateTiger)
+		v1.POST("/sighttiger", defaultMiddleware.MonitorRequest(), controller.CreateTigerSight)
 	}
 }

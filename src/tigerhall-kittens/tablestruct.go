@@ -1,8 +1,13 @@
 package tigerhall
 
-import "time"
+import (
+	"time"
+
+	"gopkg.in/mgo.v2/bson"
+)
 
 type MongoTigerCollection struct {
+	Id                  bson.ObjectId     `bson:"_id,omitempty"`
 	Name                string            `bson:"name"`
 	DOB                 time.Time         `bson:"dob"`
 	LastSeenAt          time.Time         `bson:"lastSeenAt"`

@@ -23,6 +23,7 @@ type AppConfig struct {
 			LogLevel   int
 		}
 	}
+	ImageViewURL string
 }
 
 func GetAppConfig() (*AppConfig, error) {

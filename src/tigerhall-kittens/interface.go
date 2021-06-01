@@ -9,7 +9,7 @@ type Tigerhall interface {
 	ListTigers(q queryparser.QueryParamsList,
 		limit, offset int) ([]ResListTiger, int, error)
 	SightATiger(id string, req ReqSightOfATiger) error
-	ListSigntsOfTiger(q queryparser.QueryParamsList,
+	ListSigntsOfTiger(id string,
 		limit, offset int) (*ResListSigntsOfTiger, error)
 	CreateImage(im *Image) error
 }

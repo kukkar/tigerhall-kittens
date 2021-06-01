@@ -32,6 +32,7 @@ type ReqSightOfATiger struct {
 }
 
 type ResListSigntsOfTiger struct {
+	ID          string
 	Name        string
 	DOB         time.Time
 	TigerSights []SightData
@@ -48,6 +49,7 @@ type ConfigTigerHall struct {
 }
 
 type TigerCollection struct {
+	ID                  string
 	Name                string
 	DOB                 time.Time
 	LastSeenAt          time.Time

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/kukkar/common-golang/globalconst"
 
@@ -9,14 +10,15 @@ import (
 	"github.com/kukkar/tigerhall-kittens/src/tigerhall-kittens"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kukkar/common-golang/pkg/logger"
 	"github.com/kukkar/common-golang/pkg/responsewriter"
 	"github.com/kukkar/common-golang/pkg/utils"
 	"github.com/kukkar/common-golang/pkg/utils/rError"
 )
 
 //
-//ListTigers service
-func ListTigers(c *gin.Context) {
+//ListTigerSight service
+func ListTigerSight(c *gin.Context) {
 
 	var rc utils.RequestContext
 	if requestContext, ok := c.Get(globalconst.RequestContext); ok {
@@ -34,7 +36,21 @@ func ListTigers(c *gin.Context) {
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}
-	q := c.Query("q")
+	var limit, page int
+	id := c.Query("id")
+	limitString := c.Query("limit")
+	pageString := c.Query("page")
+
+	limit, err = strconv.Atoi(limitString)
+	if err != nil {
+		logger.Error(err, rc)
+		limit = 10
+	}
+	page, err = strconv.Atoi(pageString)
+	if err != nil {
+		logger.Error(err, rc)
+		page = 0
+	}
 
 	tigerhallInstance, err := tigerhall.GetTigerHallKittens(c.Request.Context(), tigerhall.ConfigTigerHall{
 		StorageAdapter: "mongo",
@@ -44,20 +60,15 @@ func ListTigers(c *gin.Context) {
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}
-	queryList, err := parseQuery(q)
-	if err != nil {
-		err = rError.MiscError(c, err, "Unable to get tiger hall instance")
-		responsewriter.BuildResponse(c, "", err)
-		return
-	}
-	data, count, err := tigerhallInstance.ListTigers(queryList, 10, 0)
+
+	data, err := tigerhallInstance.ListSigntsOfTiger(id, limit, page)
 	if err != nil {
 		err = rError.MiscError(c, err, "Unable to get tiger hall instance")
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}
 	fmt.Printf("## %v %v %v ", rc, conf.Mongo.DbName, gConfig)
-	fmt.Printf("data %v count %v", data, count)
+	fmt.Printf("data %v ", data)
 	responsewriter.BuildResponseWithBool(c, nil, nil)
 	return
 }

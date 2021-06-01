@@ -9,14 +9,15 @@ import (
 	"github.com/kukkar/tigerhall-kittens/src/tigerhall-kittens"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kukkar/common-golang/pkg/requestparser"
 	"github.com/kukkar/common-golang/pkg/responsewriter"
 	"github.com/kukkar/common-golang/pkg/utils"
 	"github.com/kukkar/common-golang/pkg/utils/rError"
 )
 
 //
-//ListTigers service
-func ListTigers(c *gin.Context) {
+//CreateTiger service
+func CreateTiger(c *gin.Context) {
 
 	var rc utils.RequestContext
 	if requestContext, ok := c.Get(globalconst.RequestContext); ok {
@@ -34,7 +35,14 @@ func ListTigers(c *gin.Context) {
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}
-	q := c.Query("q")
+
+	var req ReqCreateTiger
+	err = requestparser.LoadBody(c, &req)
+	if err != nil {
+		err = rError.UnmarshalError(c, err, "unable to unmarshal request")
+		responsewriter.BuildResponseWithBool(c, "", err)
+		return
+	}
 
 	tigerhallInstance, err := tigerhall.GetTigerHallKittens(c.Request.Context(), tigerhall.ConfigTigerHall{
 		StorageAdapter: "mongo",
@@ -44,20 +52,23 @@ func ListTigers(c *gin.Context) {
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}
-	queryList, err := parseQuery(q)
+
+	err = tigerhallInstance.CreateTiger(tigerhall.ReqCreateTiger{
+		Name: req.Name,
+		DOB:  req.DOB,
+		Coordinates: tigerhall.Coordinates{
+			Lat:  req.Coordinates.Lat,
+			Long: req.Coordinates.Long,
+		},
+		SeenAt: req.SeenAt,
+	})
 	if err != nil {
 		err = rError.MiscError(c, err, "Unable to get tiger hall instance")
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}
-	data, count, err := tigerhallInstance.ListTigers(queryList, 10, 0)
-	if err != nil {
-		err = rError.MiscError(c, err, "Unable to get tiger hall instance")
-		responsewriter.BuildResponse(c, "", err)
-		return
-	}
+
 	fmt.Printf("## %v %v %v ", rc, conf.Mongo.DbName, gConfig)
-	fmt.Printf("data %v count %v", data, count)
 	responsewriter.BuildResponseWithBool(c, nil, nil)
 	return
 }

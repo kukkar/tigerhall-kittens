@@ -45,6 +45,7 @@ func (this *tigherhall) ListTigers(q queryparser.QueryParamsList,
 	}
 	for _, eachDbData := range dbData {
 		res = append(res, ResListTiger{
+			ID:                  eachDbData.ID,
 			Name:                eachDbData.Name,
 			DOB:                 eachDbData.DOB,
 			SeenAt:              eachDbData.LastSeenAt,
@@ -60,21 +61,52 @@ func (this *tigherhall) ListTigers(q queryparser.QueryParamsList,
 //
 func (this *tigherhall) SightATiger(tigerID string, req ReqSightOfATiger) error {
 
+	tigerData, err := this.stAdapter.getTigerData(context.Background(), tigerID)
+	if err != nil {
+		return err
+	}
+
+	dist := distance(tigerData.LastSeenCoordinates.Lat, tigerData.LastSeenCoordinates.Long,
+		req.Coordinates.Lat, req.Coordinates.Long, DISTANCE_IN_KILOMETER)
+
+	if dist <= VALIDATE_KILOMETER_ADD_SIGHT {
+		return ErrKilometerValidation
+	}
+
 	return this.stAdapter.addTigerSight(context.Background(), tigerID, SightData{
 		ImagePath:   req.ImagePath,
 		TimeStamp:   req.TimeStamp,
 		Coordinates: req.Coordinates,
 	})
-	return nil
 }
 
 //
 // ListSigntsOfTiger List All Signts of a tiger
 //
-func (this *tigherhall) ListSigntsOfTiger(q queryparser.QueryParamsList,
+func (this *tigherhall) ListSigntsOfTiger(id string,
 	limit, offset int) (*ResListSigntsOfTiger, error) {
 
-	return nil, fmt.Errorf("todo")
+	var res ResListSigntsOfTiger
+	tigerData, err := this.stAdapter.getTigerData(context.Background(), id)
+	if err != nil {
+		return nil, err
+	}
+	res.Name = tigerData.Name
+	res.DOB = tigerData.DOB
+	res.ID = tigerData.ID
+
+	for _, eachSight := range tigerData.TigerLastSeenSights {
+		res.TigerSights = append(res.TigerSights, SightData{
+
+			Coordinates: Coordinates{
+				Lat:  eachSight.Coordinates.Lat,
+				Long: eachSight.Coordinates.Long,
+			},
+			TimeStamp: eachSight.TimeStamp,
+			ImagePath: eachSight.ImagePath,
+		})
+	}
+	return &res, nil
 }
 
 func (this *tigherhall) CreateImage(im *Image) error {

@@ -68,6 +68,41 @@ func (this *mongoAdapter) getTigerSights(ctx context.Context, id string,
 	return nil, nil
 }
 
+func (this *mongoAdapter) getTigerData(ctx context.Context,
+	id string) (*TigerCollection, error) {
+
+	whereQuery := make(map[string]interface{})
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	whereQuery["_id"] = objID
+
+	mongoData, mErr := this.adatper.FindOne(ctx, TigetHallCollection, whereQuery)
+	if err != nil {
+		return nil, fmt.Errorf(mErr.Error())
+	}
+	bytesData, err := json.Marshal(mongoData)
+	if err != nil {
+		return nil, err
+	}
+	var dbData MongoTigerCollection
+
+	err = json.Unmarshal(bytesData, &dbData)
+	if err != nil {
+		return nil, err
+	}
+
+	return &TigerCollection{
+		ID:                  dbData.Id.String(),
+		Name:                dbData.Name,
+		DOB:                 dbData.DOB,
+		LastSeenAt:          dbData.LastSeenAt,
+		LastSeenCoordinates: dbData.LastSeenCoordinates,
+		TigerLastSeenSights: dbData.TigerLastSeenSights,
+	}, nil
+}
+
 func (this *mongoAdapter) getTigers(ctx context.Context, q queryparser.QueryParamsList,
 	limit, page int, sortBy string, sortOrder string) ([]TigerCollection, int, error) {
 

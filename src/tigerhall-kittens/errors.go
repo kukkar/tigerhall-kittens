@@ -23,3 +23,7 @@ var ErrNotFound error = errors.New("not found")
 
 // DB execution error
 var ErrDBExecution error = errors.New("unable to proferm db task")
+
+//kilometer validation on add sight
+
+var ErrKilometerValidation error = errors.New("kilometer validation did not verified")
