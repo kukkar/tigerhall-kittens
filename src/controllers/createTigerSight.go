@@ -2,21 +2,25 @@ package controllers
 
 import (
 	"fmt"
-
-	"github.com/kukkar/common-golang/globalconst"
+	"time"
 
 	appConf "github.com/kukkar/tigerhall-kittens/conf"
 	"github.com/kukkar/tigerhall-kittens/src/tigerhall-kittens"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kukkar/common-golang/globalconst"
 	"github.com/kukkar/common-golang/pkg/requestparser"
 	"github.com/kukkar/common-golang/pkg/responsewriter"
 	"github.com/kukkar/common-golang/pkg/utils"
 	"github.com/kukkar/common-golang/pkg/utils/rError"
 )
 
-//
-//CreateTigerSight service
+// CreateTigerSight create sight of a tiger in the wild
+// @Summary Createtiger create tiger in the wild
+// @Produce json
+// @Param add requesttigersight body ReqSightATiger true "create sight of tiger in wild"
+// @Success 200
+// @Router /v1/sighttiger [post]
 func CreateTigerSight(c *gin.Context) {
 
 	var rc utils.RequestContext
@@ -59,10 +63,10 @@ func CreateTigerSight(c *gin.Context) {
 			Lat:  req.Coordinates.Lat,
 			Long: req.Coordinates.Long,
 		},
-		TimeStamp: req.SeenAt,
+		TimeStamp: time.Now(),
 	})
 	if err != nil {
-		err = rError.MiscError(c, err, "Unable to get tiger hall instance")
+		err = rError.MiscError(c, err, "Unable to create sight of tiger")
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}

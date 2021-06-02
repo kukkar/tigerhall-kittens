@@ -39,7 +39,7 @@ func (this *tigherhall) ListTigers(q queryparser.QueryParamsList,
 	limit, offset int) ([]ResListTiger, int, error) {
 	ctx := context.TODO()
 	res := make([]ResListTiger, 0)
-	dbData, count, err := this.stAdapter.getTigers(ctx, q, limit, offset, "", "asc")
+	dbData, count, err := this.stAdapter.getTigers(ctx, q, limit, offset, "lastSeenAt", "desc")
 	if err != nil {
 		return nil, 0, err
 	}
@@ -66,12 +66,14 @@ func (this *tigherhall) SightATiger(tigerID string, req ReqSightOfATiger) error 
 		return err
 	}
 
+	fmt.Printf("############ %v", tigerData)
 	dist := distance(tigerData.LastSeenCoordinates.Lat, tigerData.LastSeenCoordinates.Long,
 		req.Coordinates.Lat, req.Coordinates.Long, DISTANCE_IN_KILOMETER)
 
 	if dist <= VALIDATE_KILOMETER_ADD_SIGHT {
 		return ErrKilometerValidation
 	}
+	fmt.Printf("############ %v", tigerData)
 
 	return this.stAdapter.addTigerSight(context.Background(), tigerID, SightData{
 		ImagePath:   req.ImagePath,
@@ -84,12 +86,12 @@ func (this *tigherhall) SightATiger(tigerID string, req ReqSightOfATiger) error 
 // ListSigntsOfTiger List All Signts of a tiger
 //
 func (this *tigherhall) ListSigntsOfTiger(id string,
-	limit, offset int) (*ResListSigntsOfTiger, error) {
+	limit, offset int) (*ResListSigntsOfTiger, *int, error) {
 
 	var res ResListSigntsOfTiger
-	tigerData, err := this.stAdapter.getTigerData(context.Background(), id)
+	tigerData, count, err := this.stAdapter.getTigerSights(context.Background(), id, "", 0, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	res.Name = tigerData.Name
 	res.DOB = tigerData.DOB
@@ -97,7 +99,6 @@ func (this *tigherhall) ListSigntsOfTiger(id string,
 
 	for _, eachSight := range tigerData.TigerLastSeenSights {
 		res.TigerSights = append(res.TigerSights, SightData{
-
 			Coordinates: Coordinates{
 				Lat:  eachSight.Coordinates.Lat,
 				Long: eachSight.Coordinates.Long,
@@ -106,25 +107,15 @@ func (this *tigherhall) ListSigntsOfTiger(id string,
 			ImagePath: eachSight.ImagePath,
 		})
 	}
-	return &res, nil
+	return &res, count, nil
 }
 
-func (this *tigherhall) CreateImage(im *Image) error {
-	if im.Variations == nil {
-		im.Variations = []Variation{{
-			Size: Size{
-				Width:  DEFAULT_VARIATION_WIDTH,
-				Height: DEFAULT_VARIATION_HEIGHT,
-			},
-			Data:  im.Data,
-			Image: im,
-		},
-		}
-	}
+func (this *tigherhall) CreateImage(im *Image) (*string, error) {
+	im.storageAdapter = this.imageStAdapter
 	for _, eachVariation := range im.Variations {
 		err := eachVariation.Tailor()
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 	return this.imageStAdapter.CreateImage(im)

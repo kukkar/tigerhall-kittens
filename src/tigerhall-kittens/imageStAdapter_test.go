@@ -14,7 +14,7 @@ func TestCreateImage(t *testing.T) {
 	imData := mockDataUploadImage()
 	imData.storageAdapter = imStAdapter
 
-	err = imStAdapter.CreateImage(imData)
+	_, err = imStAdapter.CreateImage(imData)
 	if err != nil {
 		t.Errorf("Test failed, expected: '%s', got:  '%s'", "created image successfully", err.Error())
 	}
@@ -39,7 +39,7 @@ func mockDataUploadImage() *Image {
 		Name:      "testImage9",
 		Extension: "jpeg",
 		Resource:  "tiger",
-		Type:      "tigerhalltest",
+		Type:      "3232",
 		Data:      *coreImage,
 	}
 	Variations := []Variation{{

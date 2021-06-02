@@ -35,19 +35,19 @@ type LocalStorage struct {
 //
 // Implementation of CreateImage() function
 //
-func (this *LocalStorage) CreateImage(im *Image) error {
+func (this *LocalStorage) CreateImage(im *Image) (*string, error) {
 
 	imagePath := this.getStoragePath(im.Resource, im.Type, ORIGINAL_IMAGE)
 	// Create directory if required.
 	if err := this.createDirectory(imagePath); err != nil {
-		return err
+		return nil, err
 	}
 	fullImagePath := strings.Join([]string{imagePath, im.GetName(true)}, DS)
 	saveerr := this.save(fullImagePath, im.GetDataBytes(), true)
 	if saveerr != nil {
-		return saveerr
+		return nil, saveerr
 	}
-	return nil
+	return &imagePath, nil
 }
 
 //

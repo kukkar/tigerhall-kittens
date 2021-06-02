@@ -1,9 +1,9 @@
 {
-    "AppName" : "tigerhall-kittens",
+    "AppName" : "tigerhall",
     "AppVersion" : "1.0",
-    "ServerHost" : "0.0.0.0",
+    "ServerHost" : "localhost",
     "ServerPort" : "8085",
-    "Environment" : "prod",
+    "Environment" : "local",
     "SuperKey" : "dRgUkXp2s5u8x/A?D(G+KbPeShVmYq3t",
     "LogConfig" : {
         "Level": 0,
@@ -27,7 +27,7 @@
         "ImageStorage": {
             "Use": "Local",
             "Local": {
-                "Path": "/var/data/imageprocessing"
+                "Path": "/tmp/data/imageprocessing"
             },
             "S3": {
                 "BucketName": "test",
@@ -44,7 +44,7 @@
         },
         "Mongo" : {
             "URL": "mongodb://localhost:27017",
-            "DbName" : "tiberhall"
+            "DbName" : "tigerhall"
         },
         "SentryDSN" : "https://829d394c3ec84a7fbba55e1910a87816@sentry.bharatpe.in/39"
     }

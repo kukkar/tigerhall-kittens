@@ -1,35 +1,24 @@
 package controllers
 
 import (
-	"fmt"
-
-	"github.com/kukkar/common-golang/globalconst"
-
 	appConf "github.com/kukkar/tigerhall-kittens/conf"
 	"github.com/kukkar/tigerhall-kittens/src/tigerhall-kittens"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kukkar/common-golang/pkg/requestparser"
 	"github.com/kukkar/common-golang/pkg/responsewriter"
-	"github.com/kukkar/common-golang/pkg/utils"
 	"github.com/kukkar/common-golang/pkg/utils/rError"
 )
 
-//
-//UploadImage service
+// UploadImage upload image add images in variations depending on requirement
+// @Summary upload image add images in variations depending on requirement
+// @Produce json
+// @Param add uploadimage body ReqUploadImage true "upload a image"
+// @Success 200 {object} ResUploadImage
+// @Router /v1/uploadimage [post]
 func UploadImage(c *gin.Context) {
 
-	var rc utils.RequestContext
-	if requestContext, ok := c.Get(globalconst.RequestContext); ok {
-		rc = requestContext.(utils.RequestContext)
-	}
 	conf, err := appConf.GetAppConfig()
-	if err != nil {
-		err = rError.MiscError(c, err, "Unable to get appconfig")
-		responsewriter.BuildResponse(c, "", err)
-		return
-	}
-	gConfig, err := appConf.GetGlobalConfig()
 	if err != nil {
 		err = rError.MiscError(c, err, "Unable to get appconfig")
 		responsewriter.BuildResponse(c, "", err)
@@ -59,14 +48,20 @@ func UploadImage(c *gin.Context) {
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}
-	err = tigerhallInstance.CreateImage(image)
+	imagePath, err := tigerhallInstance.CreateImage(image)
 	if err != nil {
-		err = rError.MiscError(c, err, "Unable to get tiger hall instance")
+		err = rError.MiscError(c, err, "unable to upload image")
+		responsewriter.BuildResponse(c, "", err)
+		return
+	}
+	if imagePath == nil {
+		err = rError.MiscError(c, err, "Unable to get image path from service")
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}
 
-	fmt.Printf("## %v %v %v ", rc, conf.Mongo.DbName, gConfig)
-	responsewriter.BuildResponseWithBool(c, nil, nil)
+	responsewriter.BuildResponseWithBool(c, ResUploadImage{
+		ImagePath: *imagePath,
+	}, nil)
 	return
 }

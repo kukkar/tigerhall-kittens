@@ -1,0 +1,177 @@
+basePath: /tigerhall/
+definitions:
+  controllers.Coordinates:
+    properties:
+      lat:
+        type: number
+      long:
+        type: number
+    type: object
+  controllers.ImageInfo:
+    properties:
+      data:
+        type: string
+      format:
+        type: string
+    type: object
+  controllers.ReqCreateTiger:
+    properties:
+      coordinates:
+        $ref: '#/definitions/controllers.Coordinates'
+      dob:
+        type: string
+      name:
+        type: string
+    type: object
+  controllers.ReqSightATiger:
+    properties:
+      coordinates:
+        $ref: '#/definitions/controllers.Coordinates'
+      imagePath:
+        type: string
+      seenAt:
+        type: string
+      tigerID:
+        type: string
+    type: object
+  controllers.ReqUploadImage:
+    properties:
+      image:
+        $ref: '#/definitions/controllers.ImageInfo'
+      name:
+        type: string
+      resource:
+        type: string
+      type:
+        type: string
+    type: object
+  controllers.ResListTigers:
+    properties:
+      tigers:
+        items:
+          $ref: '#/definitions/controllers.TigerData'
+        type: array
+      totalCount:
+        type: integer
+    type: object
+  controllers.ResUploadImage:
+    properties:
+      imagePath:
+        type: string
+    type: object
+  controllers.TigerData:
+    properties:
+      dob:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      seenAt:
+        type: string
+    type: object
+info:
+  contact:
+    email: sahil.kukkar99@gmail.com
+    name: API Support
+  description: Swagger API for tigerhall Project.
+  license:
+    name: SAHIL
+  title: Merchant Swagger API
+  version: "1.0"
+paths:
+  /v1/createtiger:
+    post:
+      parameters:
+      - description: create tiger in wild
+        in: body
+        name: requesttiger
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ReqCreateTiger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Createtiger create tiger in the wild
+  /v1/listtigers:
+    get:
+      parameters:
+      - description: q
+        in: query
+        name: q
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: page
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ResListTigers'
+      summary: ListTigers list tigers with provided query feature
+  /v1/listtigersights:
+    get:
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ResListTigers'
+      summary: ListTigerSight list tigers previous sights
+  /v1/sighttiger:
+    post:
+      parameters:
+      - description: create sight of tiger in wild
+        in: body
+        name: requesttigersight
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ReqSightATiger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Createtiger create tiger in the wild
+  /v1/uploadimage:
+    post:
+      parameters:
+      - description: upload a image
+        in: body
+        name: uploadimage
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ReqUploadImage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ResUploadImage'
+      summary: upload image add images in variations depending on requirement
+swagger: "2.0"

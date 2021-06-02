@@ -142,11 +142,19 @@ func (obj *MongoDriver) FindOnenLoad(coll string, q map[string]interface{}, payl
 	return nil
 }
 
-func (obj *MongoDriver) findOne(ctx context.Context, collection *mgo.Collection, query bson.M) (ret interface{}, aerr *MDBError) {
-	if result := collection.FindOne(ctx, query); result.Err() != nil {
+func (obj *MongoDriver) findOne(ctx context.Context, collection *mgo.Collection,
+	query bson.M) (ret interface{}, aerr *MDBError) {
+	result := collection.FindOne(ctx, query)
+	if result.Err() != nil {
 		return nil, getErrObj(ErrFindOneFailure, result.Err().Error())
 	}
-	return ret, nil
+	var res interface{}
+	err := result.Decode(&res)
+	if err != nil {
+		return nil, getErrObj(ErrFindOneFailure, result.Err().Error())
+	}
+
+	return res, nil
 }
 
 // // FindAll queries the mongo DB using session and returns all the results
@@ -598,6 +606,10 @@ func (obj *MongoDriver) update(ctx context.Context, collection *mgo.Collection, 
 
 // }
 
+func (obj *MongoDriver) GetRawConn() *mgo.Database {
+	return obj.conn
+}
+
 func (obj *MongoDriver) FindSortnLoad(ctx context.Context, coll string, query map[string]interface{},
 	selectField map[string]interface{},
 	sortField string, sortOrder int, skip int,
@@ -605,10 +617,10 @@ func (obj *MongoDriver) FindSortnLoad(ctx context.Context, coll string, query ma
 
 	res = make([]interface{}, 0)
 	findOptions := options.Find()
-	// // Sort by `price` field descending
-	// if sortField != "" {
-	// 	findOptions.SetSort(bson.D{{sortField, sortOrder}})
-	// }
+	// Sort by `price` field descending
+	if sortField != "" {
+		findOptions.SetSort(bson.D{{sortField, sortOrder}})
+	}
 
 	findOptions.SetSkip(int64(skip))
 	findOptions.SetLimit(int64(limit))

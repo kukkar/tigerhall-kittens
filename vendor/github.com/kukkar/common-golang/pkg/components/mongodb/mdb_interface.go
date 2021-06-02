@@ -1,11 +1,19 @@
 package mongodb
 
-import "context"
+import (
+	"context"
+
+	mgo "go.mongodb.org/mongo-driver/mongo"
+)
 
 var _ MDBInterface = (*MongoDriver)(nil)
 
 // mongodbb interface
 type MDBInterface interface {
+
+	//raw connection method for urgent purpose
+	GetRawConn() *mgo.Database
+
 	// init initializes the mongodb instance
 	Init(*MDBConfig) *MDBError
 

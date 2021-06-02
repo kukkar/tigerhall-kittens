@@ -10,6 +10,6 @@ type Tigerhall interface {
 		limit, offset int) ([]ResListTiger, int, error)
 	SightATiger(id string, req ReqSightOfATiger) error
 	ListSigntsOfTiger(id string,
-		limit, offset int) (*ResListSigntsOfTiger, error)
-	CreateImage(im *Image) error
+		limit, offset int) (*ResListSigntsOfTiger, *int, error)
+	CreateImage(im *Image) (*string, error)
 }

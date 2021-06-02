@@ -1,5 +1,5 @@
 package unittests
 
 const (
-	confFile = "testconfig.json"
+	confFile = "unittests/testconfig.json"
 )

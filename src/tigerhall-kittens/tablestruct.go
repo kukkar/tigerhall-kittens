@@ -3,22 +3,31 @@ package tigerhall
 import (
 	"time"
 
-	"gopkg.in/mgo.v2/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type MongoTigerCollection struct {
-	Id                  bson.ObjectId     `bson:"_id,omitempty"`
-	Name                string            `bson:"name"`
-	DOB                 time.Time         `bson:"dob"`
-	LastSeenAt          time.Time         `bson:"lastSeenAt"`
-	LastSeenCoordinates Coordinates       `bson:"lastSeenCoordinates"`
-	TigerLastSeenSights []MongoTigerSight `bson:"tigerLastLocations,omitempty"`
+	Id                  primitive.ObjectID `bson:"_id,omitempty"`
+	Name                string             `bson:"name"`
+	DOB                 time.Time          `bson:"dob"`
+	LastSeenAt          time.Time          `bson:"lastSeenAt"`
+	LastSeenCoordinates Coordinates        `bson:"lastSeenCoordinates"`
+	TigerLastSeenSights []MongoTigerSight  `bson:"tigerLastLocations,omitempty"`
+}
+
+type MongoTigerCollection4Sight struct {
+	Id                  primitive.ObjectID    `bson:"_id,omitempty"`
+	Name                string                `bson:"name"`
+	DOB                 time.Time             `bson:"dob"`
+	LastSeenAt          time.Time             `bson:"lastSeenAt"`
+	LastSeenCoordinates MongoTigerCoordinates `bson:"lastSeenCoordinates"`
+	TigerLastSeenSights MongoTigerSight       `bson:"tigerLastLocations,omitempty"`
 }
 
 type MongoTigerSight struct {
-	Coordinates Coordinates `bson:"coordinates"`
-	TimeStamp   time.Time   `bson:"timeStamp"`
-	ImagePath   string      `bson:"image"`
+	Coordinates MongoTigerCoordinates `bson:"coordinates"`
+	TimeStamp   time.Time             `bson:"timeStamp"`
+	ImagePath   string                `bson:"image"`
 }
 
 type MongoTigerCoordinates struct {

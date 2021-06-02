@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/kukkar/common-golang/globalconst"
 
@@ -15,8 +16,12 @@ import (
 	"github.com/kukkar/common-golang/pkg/utils/rError"
 )
 
-//
-//CreateTiger service
+// Createtiger create tiger in the wild
+// @Summary Createtiger create tiger in the wild
+// @Produce json
+// @Param add requesttiger body ReqCreateTiger true "create tiger in wild"
+// @Success 200
+// @Router /v1/createtiger [post]
 func CreateTiger(c *gin.Context) {
 
 	var rc utils.RequestContext
@@ -60,7 +65,7 @@ func CreateTiger(c *gin.Context) {
 			Lat:  req.Coordinates.Lat,
 			Long: req.Coordinates.Long,
 		},
-		SeenAt: req.SeenAt,
+		SeenAt: time.Now(),
 	})
 	if err != nil {
 		err = rError.MiscError(c, err, "Unable to get tiger hall instance")

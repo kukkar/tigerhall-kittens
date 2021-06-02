@@ -1,12 +1,10 @@
 package controllers
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/kukkar/common-golang/globalconst"
 
-	appConf "github.com/kukkar/tigerhall-kittens/conf"
 	"github.com/kukkar/tigerhall-kittens/src/tigerhall-kittens"
 
 	"github.com/gin-gonic/gin"
@@ -16,32 +14,27 @@ import (
 	"github.com/kukkar/common-golang/pkg/utils/rError"
 )
 
-//
-//ListTigerSight service
+// ListTigerSight list tigers previous sights
+// @Summary ListTigerSight list tigers previous sights
+// @Produce json
+// @Param limit query string false "limit"
+// @Param page query string false "page"
+// @Param id query string true "id"
+// @Success 200 {object} ResListTigers
+// @Router /v1/listtigersights [get]
 func ListTigerSight(c *gin.Context) {
 
 	var rc utils.RequestContext
 	if requestContext, ok := c.Get(globalconst.RequestContext); ok {
 		rc = requestContext.(utils.RequestContext)
 	}
-	conf, err := appConf.GetAppConfig()
-	if err != nil {
-		err = rError.MiscError(c, err, "Unable to get appconfig")
-		responsewriter.BuildResponse(c, "", err)
-		return
-	}
-	gConfig, err := appConf.GetGlobalConfig()
-	if err != nil {
-		err = rError.MiscError(c, err, "Unable to get appconfig")
-		responsewriter.BuildResponse(c, "", err)
-		return
-	}
+
 	var limit, page int
 	id := c.Query("id")
 	limitString := c.Query("limit")
 	pageString := c.Query("page")
 
-	limit, err = strconv.Atoi(limitString)
+	limit, err := strconv.Atoi(limitString)
 	if err != nil {
 		logger.Error(err, rc)
 		limit = 10
@@ -60,15 +53,25 @@ func ListTigerSight(c *gin.Context) {
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}
+	var res ResSightATiger
 
-	data, err := tigerhallInstance.ListSigntsOfTiger(id, limit, page)
+	data, count, err := tigerhallInstance.ListSigntsOfTiger(id, limit, page)
 	if err != nil {
 		err = rError.MiscError(c, err, "Unable to get tiger hall instance")
 		responsewriter.BuildResponse(c, "", err)
 		return
 	}
-	fmt.Printf("## %v %v %v ", rc, conf.Mongo.DbName, gConfig)
-	fmt.Printf("data %v ", data)
-	responsewriter.BuildResponseWithBool(c, nil, nil)
+	res.TotalCount = *count
+	for _, eachData := range data.TigerSights {
+		res.Data = append(res.Data, ResSightData{
+			Coordinates: Coordinates{
+				Lat:  eachData.Coordinates.Lat,
+				Long: eachData.Coordinates.Long,
+			},
+			ImagePath: eachData.ImagePath,
+			SeenAt:    eachData.TimeStamp,
+		})
+	}
+	responsewriter.BuildResponseWithBool(c, res, nil)
 	return
 }

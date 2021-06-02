@@ -2,7 +2,6 @@ package tigerhall
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/kukkar/common-golang/pkg/logger"
@@ -50,10 +49,20 @@ func (this *mongoAdapter) addTigerSight(ctx context.Context, id string, req Sigh
 		return err
 	}
 	where["_id"] = objID
+
+	mongoSightData := MongoTigerSight{
+		Coordinates: MongoTigerCoordinates{
+			Lat:  req.Coordinates.Lat,
+			Long: req.Coordinates.Long,
+		},
+		ImagePath: req.ImagePath,
+		TimeStamp: req.TimeStamp,
+	}
+
 	updates := make(map[string]interface{})
-	updates["$push"] = map[string]interface{}{"tigerLastLocations": req}
-	updates["$set"] = map[string]interface{}{"lastSeenCoordinates": req.Coordinates}
-	updates["$set"] = map[string]interface{}{"lastSeenAt": req.TimeStamp}
+	updates["$set"] = map[string]interface{}{"lastSeenCoordinates": mongoSightData.Coordinates}
+	updates["$push"] = map[string]interface{}{"tigerLastLocations": mongoSightData}
+	updates["$set"] = map[string]interface{}{"lastSeenAt": req.TimeStamp, "lastSeenCoordinates": mongoSightData.Coordinates}
 
 	mdErr := this.adatper.Update(ctx, TigetHallCollection, where, updates)
 	if mdErr != nil {
@@ -63,9 +72,49 @@ func (this *mongoAdapter) addTigerSight(ctx context.Context, id string, req Sigh
 }
 
 func (this *mongoAdapter) getTigerSights(ctx context.Context, id string,
-	sortBy string, sortOrder int, limit, page int) ([]SightData, error) {
+	sortBy string, sortOrder int, limit, page int) (*TigerCollection, *int, error) {
 
-	return nil, nil
+	rawConn := this.adatper.GetRawConn()
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, nil, err
+	}
+	pipeline := []bson.M{
+		bson.M{"$match": bson.M{"_id": objID}},
+		bson.M{"$unwind": "$tigerLastLocations"},
+		bson.M{"$sort": bson.M{"tigerLastLocations.timeStamp": -1}},
+		bson.M{"$skip": page * limit},
+		bson.M{"$limit": limit},
+	}
+
+	cursor, err := rawConn.Collection(TigetHallCollection).Aggregate(ctx, pipeline)
+	if err != nil {
+		return nil, nil, err
+	}
+	var res TigerCollection
+	res.TigerLastSeenSights = make([]MongoTigerSight, 0)
+	for cursor.Next(ctx) {
+		var mongoRecord MongoTigerCollection4Sight
+		err := cursor.Decode(&mongoRecord)
+		if err != nil {
+			return nil, nil, err
+		}
+		res.TigerLastSeenSights = append(res.TigerLastSeenSights, MongoTigerSight{
+			Coordinates: mongoRecord.TigerLastSeenSights.Coordinates,
+			ImagePath:   mongoRecord.TigerLastSeenSights.ImagePath,
+			TimeStamp:   mongoRecord.TigerLastSeenSights.TimeStamp,
+		})
+		res.DOB = mongoRecord.DOB
+		res.Name = mongoRecord.Name
+		res.ID = mongoRecord.Id.Hex()
+	}
+
+	data, err := this.getTigerData(ctx, id)
+	if err != nil {
+		return nil, nil, err
+	}
+	count := len(data.TigerLastSeenSights)
+	return &res, &count, nil
 }
 
 func (this *mongoAdapter) getTigerData(ctx context.Context,
@@ -77,24 +126,23 @@ func (this *mongoAdapter) getTigerData(ctx context.Context,
 		return nil, err
 	}
 	whereQuery["_id"] = objID
-
 	mongoData, mErr := this.adatper.FindOne(ctx, TigetHallCollection, whereQuery)
 	if err != nil {
 		return nil, fmt.Errorf(mErr.Error())
 	}
-	bytesData, err := json.Marshal(mongoData)
+	bytesData, err := bson.Marshal(mongoData)
 	if err != nil {
 		return nil, err
 	}
 	var dbData MongoTigerCollection
 
-	err = json.Unmarshal(bytesData, &dbData)
+	err = bson.Unmarshal(bytesData, &dbData)
 	if err != nil {
 		return nil, err
 	}
 
 	return &TigerCollection{
-		ID:                  dbData.Id.String(),
+		ID:                  dbData.Id.Hex(),
 		Name:                dbData.Name,
 		DOB:                 dbData.DOB,
 		LastSeenAt:          dbData.LastSeenAt,
@@ -120,22 +168,26 @@ func (this *mongoAdapter) getTigers(ctx context.Context, q queryparser.QueryPara
 	mongoData, collCount, mErr := this.adatper.FindSortnLoad(ctx, TigetHallCollection, whereQuery, nil,
 		sortBy, sortOrderMongo, page*limit, limit)
 	if err != nil {
-		fmt.Printf("error %v", err)
 		return nil, 0, fmt.Errorf(mErr.Error())
-	}
-	bytesData, err := json.Marshal(mongoData)
-	if err != nil {
-		return nil, 0, err
 	}
 	dbData := make([]MongoTigerCollection, 0)
 
-	err = json.Unmarshal(bytesData, &dbData)
-	if err != nil {
-		return nil, 0, err
-	}
+	for _, eachmData := range mongoData {
+		var singleRecord MongoTigerCollection
+		bytesData, err := bson.Marshal(eachmData)
+		if err != nil {
+			return nil, 0, err
+		}
+		err = bson.Unmarshal(bytesData, &singleRecord)
+		if err != nil {
+			return nil, 0, err
+		}
+		dbData = append(dbData, singleRecord)
 
+	}
 	for _, eachData := range dbData {
 		listData = append(listData, TigerCollection{
+			ID:                  eachData.Id.Hex(),
 			Name:                eachData.Name,
 			DOB:                 eachData.DOB,
 			LastSeenAt:          eachData.LastSeenAt,

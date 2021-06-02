@@ -55,6 +55,9 @@ func (this *Variation) Tailor() error {
 	//Chop Image to correct size
 	this.Data = this.tailor(this.Size, this.Image.Data)
 
+	if this.Image == nil {
+		return fmt.Errorf("unable to get image from instance")
+	}
 	//Store Variation
 	err := this.Image.storageAdapter.CreateVariation(this)
 	if err != nil {

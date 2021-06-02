@@ -2,13 +2,14 @@ package controllers
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
+
 	"github.com/kukkar/common-golang/pkg/utils/queryparser"
 	appConf "github.com/kukkar/tigerhall-kittens/conf"
 	"github.com/kukkar/tigerhall-kittens/src/globalconst"
 	tigerhall "github.com/kukkar/tigerhall-kittens/src/tigerhall-kittens"
 	validator "gopkg.in/go-playground/validator.v9"
-	"regexp"
-	"strings"
 )
 
 func parseQuery(q string) (queryparser.QueryParamsList, error) {
@@ -53,6 +54,17 @@ func (r *ReqUploadImage) toImage(conf *appConf.AppConfig) (*tigerhall.Image, err
 		return nil, fmt.Errorf("Could not convert to core Image, Error:%s", err.Error())
 	}
 	im.Data = *imCore
+
+	im.Variations = []tigerhall.Variation{{
+		Size: tigerhall.Size{
+			Width:  tigerhall.DEFAULT_VARIATION_WIDTH,
+			Height: tigerhall.DEFAULT_VARIATION_HEIGHT,
+		},
+		Extension: ext,
+		Data:      *imCore,
+		Image:     im,
+	},
+	}
 
 	return im, nil
 }
