@@ -223,9 +223,7 @@ var doc = `{
                     "$ref": "#/definitions/controllers.Coordinates"
                 },
                 "imagePath": {
-                    "type": "string"
-                },
-                "seenAt": {
+                    "description": "SeenAt      time.Time   ` + "`" + `json:\"seenAt\"` + "`" + `",
                     "type": "string"
                 },
                 "tigerID": {
