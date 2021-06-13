@@ -46,6 +46,6 @@
             "URL": "mongodb://localhost:27017",
             "DbName" : "tigerhall"
         },
-        "SentryDSN" : "https://829d394c3ec84a7fbba55e1910a87816@sentry.bharatpe.in/39"
+        "SentryDSN" : "sahil"
     }
 }
