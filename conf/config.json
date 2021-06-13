@@ -4,7 +4,7 @@
     "ServerHost" : "localhost",
     "ServerPort" : "8085",
     "Environment" : "local",
-    "SuperKey" : "dRgUkXp2s5u8x/A?D(G+KbPeShVmYq3t",
+    "SuperKey" : "testing",
     "LogConfig" : {
         "Level": 0,
         "Encoding": "json",
